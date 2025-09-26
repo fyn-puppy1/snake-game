@@ -1,8 +1,8 @@
 const canvas = document.getElementById('snake');
 const ctx = canvas.getContext('2d');
 
-// Game constants
-const gridSize = 20;
+// Improved: Snake is smaller and rounded
+const gridSize = 14; // smaller snake body
 const tileCount = canvas.width / gridSize;
 let snake = [{x: 10, y: 10}];
 let food = {x: 15, y: 10};
@@ -13,16 +13,46 @@ let gameOver = false;
 let speed = 120; // ms per frame
 
 function drawSnake() {
-    ctx.fillStyle = "#5afc7b";
     snake.forEach((segment, idx) => {
-        ctx.fillStyle = idx === 0 ? "#fff44f" : "#5afc7b";
-        ctx.fillRect(segment.x * gridSize, segment.y * gridSize, gridSize, gridSize);
+        ctx.save();
+        ctx.beginPath();
+        // Make head a white/yellow glowing circle, body a green glowing circle
+        if (idx === 0) {
+            ctx.shadowColor = "#fff44f";
+            ctx.shadowBlur = 18;
+            ctx.fillStyle = "#fff44f";
+        } else {
+            ctx.shadowColor = "#7fffd4";
+            ctx.shadowBlur = 8;
+            ctx.fillStyle = "#5afc7b";
+        }
+        ctx.arc(
+            segment.x * gridSize + gridSize / 2,
+            segment.y * gridSize + gridSize / 2,
+            gridSize / 2.1,
+            0,
+            2 * Math.PI
+        );
+        ctx.fill();
+        ctx.restore();
     });
 }
 
 function drawFood() {
+    ctx.save();
+    ctx.shadowColor = "#ff8a65";
+    ctx.shadowBlur = 10;
+    ctx.beginPath();
     ctx.fillStyle = "#f96b4c";
-    ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
+    ctx.arc(
+        food.x * gridSize + gridSize / 2,
+        food.y * gridSize + gridSize / 2,
+        gridSize / 2.3,
+        0,
+        2 * Math.PI
+    );
+    ctx.fill();
+    ctx.restore();
 }
 
 function drawScore() {
